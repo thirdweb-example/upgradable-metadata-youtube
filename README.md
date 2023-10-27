@@ -1,15 +1,8 @@
-## Getting Started
+## Create an NFT with updatable metadata YouTube Tutorial
 
-Create a project using this example:
+[How to create an NFT with updatable metadata - Evolving Pokemon NFTs](https://youtu.be/ivVs2nmV-HY)
 
-```bash
-npx thirdweb create --template next-typescript-starter
-```
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-On `pages/_app.tsx`, you'll find our `ThirdwebProvider` wrapping your app, this is necessary for our [hooks](https://portal.thirdweb.com/react) and
-[UI Components](https://portal.thirdweb.com/ui-components) to work.
+In this video, learn all about how to update the metadata of your NFTs. We go over how to create a simple app showcasing how to upgrade the metadata of given NFTs. We create a Pokemon NFT that can gain experience and level up, allowing that data to be reflected in the metadata of the NFT. Once a certain level is reached you can evolve your Pokemon changing the image and name of the NFT.
 
 ## Environment Variables
 
