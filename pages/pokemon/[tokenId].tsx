@@ -1,12 +1,12 @@
-import { MediaRenderer, useContract, useNFT } from "@thirdweb-dev/react";
+import { MediaRenderer, NFT, useContract, useNFT, useSDK } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 import { CONTRACT_ADDRESS } from "../../constants/addresses";
 import styles from "../../styles/Home.module.css";
 import { useState } from "react";
-import { evolve, gainExp } from "../../utils/updateMetadata";
 
 export default function PokemonDetail() {
     const router = useRouter();
+    const sdk = useSDK();
     const { tokenId } = router.query;
     const [status, setStatus] = useState("");
 
@@ -16,6 +16,83 @@ export default function PokemonDetail() {
         data: nft,
         isLoading: isNFTLoading,
     } = useNFT(contract, tokenId?.toString());
+
+    const pikachuImage = "https://cc56bbcfc1e0140ce8d572c3863c9985.ipfscdn.io/ipfs/bafybeiheyj5s4djkigc7jocls3nhvtisniuq5mzyodxflqwf5ih547rcce/Pikachu.png";
+
+    async function gainExp(
+        nft: NFT,
+        level: string,
+        exp: string,
+        nftTokenId: string,
+    ){
+        try {
+            var updatedExp = await parseInt(exp) + 50;
+            var updatedLvl = await parseInt(level);
+
+            if (updatedExp >= 100) {
+                updatedLvl += 1;
+                updatedExp -= 100;
+            }
+
+            const metadata = {
+                ...nft.metadata,
+                attributes: [
+                    {
+                        trait_type: "Level",
+                        value: updatedLvl.toString(),
+                    },
+                    {
+                        trait_type: "Exp",
+                        value: updatedExp.toString(),
+                    },
+                ],
+            };
+
+            const newUri = await sdk!.storage.upload(metadata);
+
+            const updateNFT = await contract!.call(
+                "setTokenURI",
+                [
+                    nftTokenId,
+                    newUri,
+                ]
+            );
+
+            return { success: "Pokemon Trained!" };
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    async function evolve(
+        nft: NFT,
+        level: string,
+        nftTokenId: string,
+    ){
+        try {
+            if(parseInt(level) >= 3) {
+                const metadata = {
+                    ...nft.metadata,
+                    name: "Pikachu",
+                    image: pikachuImage,
+                };
+    
+                const newUri = await sdk!.storage.upload(metadata);
+    
+                const updateNFT = await contract!.call(
+                    "setTokenURI",
+                    [
+                        nftTokenId,
+                        newUri,
+                    ],
+                );
+            }
+    
+            return;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     if(isNFTLoading) {
         return (
